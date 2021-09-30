@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.tatyanashkolnik.servicestest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,20 +22,32 @@ class MainActivity : AppCompatActivity() {
             startService(MyService.newIntent(this, 25))
         }
         binding.foregroundService.setOnClickListener {
-            showNotification()
+//            showNotification()
+            ContextCompat.startForegroundService( // В классе ContextCompat уже сделана проверка
+                this,                // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                MyForegroundService.newIntent(this)
+            )
+
+            // startForegroundService вызывает у MyForegroundService метод startForeground()
+            // который как бы обещает, что в течение 5 секунд покажжет уведомление пользователю
+            // которое невозможно смахнуть
         }
     }
 
     private fun showNotification() {
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager: NotificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // если SDK 26 или больше
-             val notificationChannel = NotificationChannel(    // создаем channel
+            val notificationChannel = NotificationChannel(    // создаем channel
                 CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(notificationChannel)
         }
+
+        // В классе NotificationCompat уже сделана проверка
+        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Title")
             .setContentText("Text")
