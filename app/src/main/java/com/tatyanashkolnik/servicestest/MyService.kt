@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import kotlinx.coroutines.*
 
 class MyService : Service() {
+
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate() {
         super.onCreate()
@@ -14,16 +17,22 @@ class MyService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        log("onStartCommand()")
-        for(i in 0 until 100){
-            Thread.sleep(1000)
-            log("Timer $i")
+        val start = intent?.getIntExtra(EXTRA_START, 0) ?: 0
+        scope.launch {
+            log("onStartCommand()")
+            for(i in start until start + 100){
+                delay(1000)
+                log("Timer $i")
+            }
         }
-        return super.onStartCommand(intent, flags, startId)
+        // return  START_STICKY
+        // return START_NOT_STICKY
+         return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        scope.cancel()
         log("onDestroy()")
     }
 
@@ -36,8 +45,13 @@ class MyService : Service() {
     }
 
     companion object{
-        fun newIntent(context: Context): Intent {
-            return Intent(context, MyService::class.java)
+
+        const val EXTRA_START = "start"
+
+        fun newIntent(context: Context, startInt: Int): Intent {
+            return Intent(context, MyService::class.java).apply {
+                putExtra(EXTRA_START, startInt)
+            }
         }
     }
 }
