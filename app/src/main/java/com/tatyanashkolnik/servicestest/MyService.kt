@@ -20,14 +20,14 @@ class MyService : Service() {
         val start = intent?.getIntExtra(EXTRA_START, 0) ?: 0
         scope.launch {
             log("onStartCommand()")
-            for(i in start until start + 100){
+            for (i in start until start + 100) {
                 delay(1000)
                 log("Timer $i")
             }
         }
         // return  START_STICKY
         // return START_NOT_STICKY
-         return START_REDELIVER_INTENT
+        return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
@@ -40,11 +40,11 @@ class MyService : Service() {
         TODO("Not yet implemented")
     }
 
-    private fun log(message: String){
+    private fun log(message: String) {
         Log.d("SERVICE_TAG", "MyService: $message")
     }
 
-    companion object{
+    companion object {
 
         const val EXTRA_START = "start"
 
