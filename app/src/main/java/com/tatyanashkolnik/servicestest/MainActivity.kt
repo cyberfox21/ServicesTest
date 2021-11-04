@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.service.setOnClickListener {
+            stopService(MyForegroundService.newIntent(this))
             startService(MyService.newIntent(this, 25))
         }
         binding.foregroundService.setOnClickListener {
@@ -31,6 +32,12 @@ class MainActivity : AppCompatActivity() {
             // startForegroundService вызывает у MyForegroundService метод startForeground()
             // который как бы обещает, что в течение 5 секунд покажжет уведомление пользователю
             // которое невозможно смахнуть
+        }
+        binding.intentService.setOnClickListener {
+            ContextCompat.startForegroundService(
+                this,
+                MyIntentService.newIntent(this)
+            )
         }
     }
 
