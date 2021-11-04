@@ -3,17 +3,13 @@ package com.tatyanashkolnik.servicestest
 import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import kotlinx.coroutines.*
 
 class MyIntentService : IntentService(NAME) {
-
     override fun onCreate() {
         super.onCreate()
         log("onCreate()")
@@ -21,17 +17,10 @@ class MyIntentService : IntentService(NAME) {
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, createNotification())
     }
-
-
     override fun onDestroy() {
         super.onDestroy()
         log("onDestroy()")
     }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        TODO("Not yet implemented")
-    }
-
     override fun onHandleIntent(intent: Intent?) {
         log("onHandleIntent()")
         for (i in 0 until 5) {
@@ -40,17 +29,14 @@ class MyIntentService : IntentService(NAME) {
         }
         // после выполнения этого метода сервис будет остановлен автоматически
     }
-
     private fun log(message: String) {
-        Log.d("SERVICE_TAG", "MyForegroundService: $message")
+        Log.d("SERVICE_TAG", "MyIntentService: $message")
     }
-
     private fun createNotification() = NotificationCompat.Builder(this, CHANNEL_ID)
         .setContentText("Foreground text")
         .setContentTitle("Foreground title")
         .setSmallIcon(R.drawable.ic_launcher_foreground)
         .build()
-
     private fun createNotificationChannel() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -62,7 +48,6 @@ class MyIntentService : IntentService(NAME) {
             notificationManager.createNotificationChannel(notificationChannel)
         }
     }
-
     companion object {
 
         const val NAME = "intent_service"
