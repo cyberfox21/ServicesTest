@@ -34,7 +34,7 @@ class MyIntentService2 : IntentService(NAME) { // для комбинирова�
     }
 
     private fun log(message: String) {
-        Log.d("SERVICE_TAG", "MyIntentService: $message")
+        Log.d("SERVICE_TAG", "MyIntentService2: $message")
     }
 
     companion object {
