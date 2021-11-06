@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.tatyanashkolnik.servicestest.MyJobService.Companion.JOB_ID
 import com.tatyanashkolnik.servicestest.databinding.ActivityMainBinding
 
@@ -68,6 +71,15 @@ class MainActivity : AppCompatActivity() {
         }
         binding.jobIntentService.setOnClickListener {
             MyJobIntentService.enqueue(this, page++)
+        }
+        binding.workManager.setOnClickListener {
+            val workManager =
+                WorkManager.getInstance(applicationContext) // контекст приложения а то memory leaks
+            workManager.enqueueUniqueWork(
+                MyWorker.NAME,
+                ExistingWorkPolicy.APPEND,
+                MyWorker.makeRequest(page++)
+            )
         }
     }
 }
